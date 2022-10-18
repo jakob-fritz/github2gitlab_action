@@ -150,7 +150,7 @@ class GitHub2GitLab(object):
 
     def authenticate(self):
         # Set username and token first before using git
-        # This hoepfully saves trouble later when pushing code
+        # This hopefully saves trouble later when pushing code
         self.sh("git config --global credentials.username {}".format(
             os.environ.get('GITLAB_USERNAME')))
         self.sh("git config --global core.askPass /getpasswd.sh")
@@ -218,10 +218,12 @@ class GitHub2GitLab(object):
         #
         # Push
         #
+        # self.sh("git push --prune --force gitlab " +
+        #         branches_ref + " " +
+        #         "+refs/heads/pull/*:refs/heads/pull/* " +
+        #         "+refs/tags/*:refs/tags/* ")
         self.sh("git push --prune --force gitlab " +
-                branches_ref + " " +
-                "+refs/heads/pull/*:refs/heads/pull/* " +
-                "+refs/tags/*:refs/tags/* ")
+                branches_ref + " ")
         os.chdir("..")
         self.revision2commit = {}
 
