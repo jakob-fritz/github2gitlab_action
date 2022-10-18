@@ -135,8 +135,8 @@ class GitHub2GitLab(object):
 
     def run(self):
         # self.add_key()
-        if self.add_project():
-            self.unprotect_branches()
+        # if self.add_project():
+        # self.unprotect_branches()
         self.git_mirror()
         if not self.args.skip_pull_requests:
             self.pull_requests = self.get_pull_requests()
