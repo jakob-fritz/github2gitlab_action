@@ -134,6 +134,7 @@ class GitHub2GitLab(object):
         return GitHub2GitLab(GitHub2GitLab.get_parser().parse_args(argv))
 
     def run(self):
+        self.authenticate()
         # self.add_key()
         # if self.add_project():
         # self.unprotect_branches()
@@ -146,6 +147,14 @@ class GitHub2GitLab(object):
         if self.args.clean:
             self.clean()
         return 0
+
+    def authenticate(self):
+        # Set username and token first before using git
+        # This hoepfully saves trouble later when pushing code
+        self.sh("git config --global credentials.username {}".format(
+            os.environ.get('GITLAB_USERNAME')))
+        self.sh("git config --global core.askPass /getpasswd.sh")
+        self.sh("git config --global credential.helper cache")
 
     def sh(self, command):
         log.debug(":sh: " + command)
