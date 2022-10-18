@@ -134,7 +134,7 @@ class GitHub2GitLab(object):
         return GitHub2GitLab(GitHub2GitLab.get_parser().parse_args(argv))
 
     def run(self):
-        self.add_key()
+        # self.add_key()
         if self.add_project():
             self.unprotect_branches()
         self.git_mirror()
