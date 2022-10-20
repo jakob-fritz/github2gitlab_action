@@ -29,11 +29,11 @@ branch_uri="$(urlencode ${branch})"
 sh -c "git config --global credential.username $GITLAB_USERNAME"
 sh -c "git config --global core.askPass /getpasswd.sh"
 sh -c "git config --global credential.helper cache"
-sh -c "git remote add mirror $*"
-sh -c "echo pushing to $branch branch at $(git remote get-url --push mirror)"
+sh -c "git remote add gitlab $GITLAB_REPO_URL"
+sh -c "echo pushing to $branch branch at $(git remote get-url --push gitlab)"
 if [ "${FORCE_PUSH:-}" = "true" ]
 then
-  sh -c "git push --force mirror $branch"
+  sh -c "git push --force gitlab $branch"
 else
-  sh -c "git push mirror $branch"
+  sh -c "git push gitlab $branch"
 fi
