@@ -70,7 +70,7 @@ class GitHub2GitLab(object):
         if self.args.branches:
             self.github['branches'] = self.args.branches.split(',')
         self.gitlab = {
-            'git': self.args.gitlab_url.replace('http://', 'git@'),
+            'git': self.args.gitlab_url.replace('http://', 'git@').replace('https://', 'git@'),
             'host': self.args.gitlab_url,
             'name': self.args.gitlab_name,
             'namespace': self.args.gitlab_namespace,
@@ -461,7 +461,7 @@ class GitHub2GitLab(object):
             while next_query:
                 log.debug(str(next_query))
                 result = requests.get(url, params=next_query)
-                payloads += result.json()
+                payloads += result.json.loads()
                 next_query = None
                 for link in result.headers.get('Link', '').split(','):
                     if 'rel="next"' in link:
