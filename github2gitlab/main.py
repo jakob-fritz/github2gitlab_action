@@ -153,7 +153,7 @@ class GitHub2GitLab(object):
         # This hopefully saves trouble later when pushing code
         self.sh("git config --global credentials.username {}".format(
             os.environ.get('GITLAB_USERNAME')))
-        self.sh("git config --global core.askPass /getpasswd.sh")
+        self.sh("git config --global core.askPass ./getpasswd.sh")
         self.sh("git config --global credential.helper cache")
 
     def sh(self, command):
