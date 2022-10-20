@@ -461,7 +461,10 @@ class GitHub2GitLab(object):
             while next_query:
                 log.debug(str(next_query))
                 result = requests.get(url, params=next_query)
-                payloads += json.loads(result.json())
+                print(f'Type of result is: {type(result.json())}')
+                if isinstance(result.json(), dict):
+                    print(f'Keys in result are: {sorted(result.json().keys())}')
+                payloads.append(result.json())
                 next_query = None
                 for link in result.headers.get('Link', '').split(','):
                     if 'rel="next"' in link:
