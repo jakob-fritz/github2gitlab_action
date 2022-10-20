@@ -461,7 +461,7 @@ class GitHub2GitLab(object):
             while next_query:
                 log.debug(str(next_query))
                 result = requests.get(url, params=next_query)
-                payloads += result.json.loads()
+                payloads += json.loads(result.json())
                 next_query = None
                 for link in result.headers.get('Link', '').split(','):
                     if 'rel="next"' in link:
