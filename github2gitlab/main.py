@@ -76,6 +76,7 @@ class GitHub2GitLab(object):
             'namespace': self.args.gitlab_namespace,
             'url': self.args.gitlab_url + "/api/v4",
             'repo': self.args.gitlab_repo,
+            'repo_id': self.args.gitlab_repo_id,
             'token': self.args.gitlab_token,
         }
 
@@ -509,7 +510,7 @@ class GitHub2GitLab(object):
         "http://doc.gitlab.com/ce/api/merge_requests.html"
         g = self.gitlab
         merges = self.get(g['url'] + "/projects/" +
-                          g['repo'] + "/merge_requests",
+                          g['repo_id'] + "/merge_requests",
                           {'private_token': g['token'],
                            'state': 'all'}, cache=False)
         return dict([(str(merge['id']), merge) for merge in merges])
