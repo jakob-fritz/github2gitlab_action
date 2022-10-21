@@ -450,7 +450,7 @@ class GitHub2GitLab(object):
             log.error("unable to json.loads(" + payload + ")")
             raise e
 
-    def get(self, url, query, cache):
+    def get(self, url, query, cache, header={}):
         payloads_file = (self.tmpdir + "/" +
                          hashlib.sha1(url.encode('utf-8')).hexdigest() +
                          ".json")
@@ -460,7 +460,7 @@ class GitHub2GitLab(object):
             next_query = query
             while next_query:
                 log.debug(str(next_query))
-                result = requests.get(url, params=next_query)
+                result = requests.get(url, params=next_query, headers=header)
                 res_json = result.json()
                 print(f'Type of result is: {type(res_json)}')
                 if isinstance(res_json, dict):
@@ -492,8 +492,9 @@ class GitHub2GitLab(object):
         "https://developer.github.com/v3/pulls/#list-pull-requests"
         g = self.github
         query = {'state': 'all'}
+        header = {}
         if self.args.github_token:
-            query['access_token'] = g['token']
+            header['Authorization'] = f"token {g['token']}"
 
         def f(pull):
             if self.args.ignore_closed:
@@ -503,7 +504,7 @@ class GitHub2GitLab(object):
                 return True
         pulls = filter(f,
                        self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
-                                query, self.args.cache))
+                                query, self.args.cache, header=header))
         return dict([(str(pull['number']), pull) for pull in pulls])
 
     def get_merge_requests(self):
