@@ -465,8 +465,8 @@ class GitHub2GitLab(object):
                 print(f'Type of result is: {type(res_json)}')
                 if isinstance(res_json, dict):
                     print(f'Keys in result are: {sorted(res_json.keys())}')
-                    print(f'documentation_url is: {res_json["documentation_url"]}')
-                    print(f'message is: {res_json["message"]}')
+                    # print(f'documentation_url is: {res_json["documentation_url"]}')
+                    # print(f'message is: {res_json["message"]}')
                 payloads.append(result.json())
                 next_query = None
                 for link in result.headers.get('Link', '').split(','):
