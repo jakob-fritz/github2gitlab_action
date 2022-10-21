@@ -462,11 +462,6 @@ class GitHub2GitLab(object):
                 log.debug(str(next_query))
                 result = requests.get(url, params=next_query, headers=header)
                 res_json = result.json()
-                print(f'Type of result is: {type(res_json)}')
-                if isinstance(res_json, dict):
-                    print(f'Keys in result are: {sorted(res_json.keys())}')
-                    # print(f'documentation_url is: {res_json["documentation_url"]}')
-                    # print(f'message is: {res_json["message"]}')
                 payloads.append(result.json())
                 next_query = None
                 for link in result.headers.get('Link', '').split(','):
@@ -486,7 +481,6 @@ class GitHub2GitLab(object):
         else:
             with open(payloads_file, 'r') as f:
                 payloads = json.load(f)
-        print(f'Received list with {len(payloads)} entries')
         return payloads
 
     def get_pull_requests(self):
@@ -499,13 +493,6 @@ class GitHub2GitLab(object):
             header['Authorization'] = f"token {g['token']}"
 
         def f(pull):
-            print(f'Type of entry in reply is: {type(pull)}')
-            if isinstance(pull, dict):
-                print(f'Keys in pull-entry are: {sorted(pull.keys())}')
-            elif isinstance(pull, list):
-                print(f'pull-entry is list with {len(pull)} entries')
-            else:
-                print(f'pull is: {pull}')
             if self.args.ignore_closed:
                 return (pull['state'] == 'opened' or
                         (pull['state'] == 'closed' and pull['merged_at']))
