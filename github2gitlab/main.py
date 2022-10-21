@@ -102,6 +102,8 @@ class GitHub2GitLab(object):
                             required=True)
         parser.add_argument('--gitlab-repo',
                             help='Gitlab repo (for instance ceph/ceph)')
+        parser.add_argument('--gitlab-repo-id',
+                            help='Gitlab repo ID (for instance 1234)')
         parser.add_argument('--github-token',
                             help='GitHub authentication token')
         parser.add_argument('--github-repo',
