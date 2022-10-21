@@ -497,6 +497,11 @@ class GitHub2GitLab(object):
             header['Authorization'] = f"token {g['token']}"
 
         def f(pull):
+            print(f'Type of entry in reply is: {type(pull)}')
+            if isinstance(pull, dict):
+                print(f'Keys in pull-entry are: {sorted(pull.keys())}')
+            else:
+                print(f'pull is: {pull}')
             if self.args.ignore_closed:
                 return (pull['state'] == 'opened' or
                         (pull['state'] == 'closed' and pull['merged_at']))
