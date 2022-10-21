@@ -486,6 +486,7 @@ class GitHub2GitLab(object):
         else:
             with open(payloads_file, 'r') as f:
                 payloads = json.load(f)
+        print(f'Received list with {len(payloads)} entries')
         return payloads
 
     def get_pull_requests(self):
