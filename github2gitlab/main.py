@@ -491,7 +491,8 @@ class GitHub2GitLab(object):
     def get_pull_requests(self):
         "https://developer.github.com/v3/pulls/#list-pull-requests"
         g = self.github
-        query = {'state': 'all'}
+        query = {'state': 'all',
+                 'per_page': 100}
         header = {}
         if self.args.github_token:
             header['Authorization'] = f"token {g['token']}"
