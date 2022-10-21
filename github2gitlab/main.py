@@ -513,8 +513,8 @@ class GitHub2GitLab(object):
         g = self.gitlab
         merges = self.get(g['url'] + "/projects/" +
                           g['repo_id'] + "/merge_requests",
-                          {'private_token': g['token'],
-                           'state': 'all'}, cache=False)
+                          {'state': 'all'}, cache=False,
+                          header={'PRIVATE-TOKEN': g['token']})
         print(f'reply is: {merges}')
         return dict([(str(merge['id']), merge) for merge in merges])
 
