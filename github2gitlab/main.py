@@ -461,9 +461,12 @@ class GitHub2GitLab(object):
             while next_query:
                 log.debug(str(next_query))
                 result = requests.get(url, params=next_query)
-                print(f'Type of result is: {type(result.json())}')
-                if isinstance(result.json(), dict):
-                    print(f'Keys in result are: {sorted(result.json().keys())}')
+                res_json = result.json()
+                print(f'Type of result is: {type(res_json)}')
+                if isinstance(res_json, dict):
+                    print(f'Keys in result are: {sorted(res_json.keys())}')
+                    print(f'documentation_url is: {res_json['documentation_url']}')
+                    print(f'message is: {res_json['message']}')
                 payloads.append(result.json())
                 next_query = None
                 for link in result.headers.get('Link', '').split(','):
