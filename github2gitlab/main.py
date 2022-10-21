@@ -500,6 +500,8 @@ class GitHub2GitLab(object):
             print(f'Type of entry in reply is: {type(pull)}')
             if isinstance(pull, dict):
                 print(f'Keys in pull-entry are: {sorted(pull.keys())}')
+            elif isinstance(pull, list):
+                print(f'pull-entry is list with {len(pull)} entries')
             else:
                 print(f'pull is: {pull}')
             if self.args.ignore_closed:
