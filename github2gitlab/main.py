@@ -507,9 +507,10 @@ class GitHub2GitLab(object):
                         (pull['state'] == 'closed' and pull['merged_at']))
             else:
                 return True
-        pulls = filter(f,
-                       self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
-                                query, self.args.cache, header=header))
+        pulls = [pull for pull
+                 in self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
+                             query, self.args.cache, header=header)
+                 if f(pull)]
         return dict([(str(pull['number']), pull) for pull in pulls])
 
     def get_merge_requests(self):
