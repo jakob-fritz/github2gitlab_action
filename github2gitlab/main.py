@@ -516,7 +516,7 @@ class GitHub2GitLab(object):
                           {'state': 'all'}, cache=False,
                           header={'PRIVATE-TOKEN': g['token']})
         print(f'reply is: {merges}')
-        return dict([(str(merge['id']), merge) for merge in merges])
+        return dict([(str(merge['id']), merge) for merge in merges if isinstance(merge, dict)])
 
     def create_merge_request(self, query):
         g = self.gitlab
