@@ -523,7 +523,7 @@ class GitHub2GitLab(object):
     def create_merge_request(self, query):
         g = self.gitlab
         header = {'PRIVATE-TOKEN': g['token']}
-        url = g['url'] + "/projects/" + g['repo'] + "/merge_requests"
+        url = g['url'] + "/projects/" + g['repo_id'] + "/merge_requests"
         log.info('create_merge_request: ' + str(query))
         result = requests.post(url, params=query, header=header)
         if result.status_code != requests.codes.created:
@@ -558,7 +558,7 @@ class GitHub2GitLab(object):
     def put_merge_request(self, merge_request, updates):
         g = self.gitlab
         header = {'PRIVATE-TOKEN': g['token']}
-        url = (g['url'] + "/projects/" + g['repo'] + "/merge_requests/" +
+        url = (g['url'] + "/projects/" + g['repo_id'] + "/merge_requests/" +
                str(merge_request['iid']))
         log.info('update_merge_request: ' + url + ' <= ' + str(updates))
         return requests.put(url, params=updates, header=header).json()
@@ -573,7 +573,7 @@ class GitHub2GitLab(object):
                 value = self.STATE_EVENT2MERGE_STATE[updates['state_event']]
             result_value = result.get(key) or ''
             if value.strip() != result_value.strip():
-                url = (g['host'] + "/" + parse.unquote(g['repo']) + "/" +
+                url = (g['host'] + "/" + parse.unquote(g['repo_id']) + "/" +
                        "merge_requests/" + str(result['iid']))
                 raise ValueError("{url}: {key} value expected to be {value}"
                                  " but is {result}".format(
