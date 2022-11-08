@@ -506,11 +506,13 @@ class GitHub2GitLab(object):
             else:
                 return True
         pulls = []
-        reply = self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
-                         query, self.args.cache, header=header)
-        print(f"Got Pull-Requests. Reply is: {reply}")
-        for listentry in reply[0]:
-            pulls += filter(f, listentry)
+        replies = self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
+                           query, self.args.cache, header=header)
+        print(f"Got Pull-Requests. Reply is: {replies}")
+        for reply in replies:
+            for listentry in reply:
+                pulls += filter(f, listentry)
+        print(f"{len(pulls)} pull-requests found.")
         return dict([(str(pull['number']), pull) for pull in pulls])
 
     def get_merge_requests(self):
