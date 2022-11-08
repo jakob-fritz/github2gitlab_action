@@ -516,14 +516,16 @@ class GitHub2GitLab(object):
                           {'state': 'all'}, cache=False,
                           header={'PRIVATE-TOKEN': g['token']})
         print(f'reply is: {merges}')
-        return dict([(str(merge['id']), merge) for merge in merges if isinstance(merge, dict)])
+        return dict([(str(merge['id']), merge)
+                     for merge in merges
+                     if isinstance(merge, dict)])
 
     def create_merge_request(self, query):
         g = self.gitlab
-        query['private_token'] = g['token']
+        header = {'PRIVATE_TOKEN': g['token']}
         url = g['url'] + "/projects/" + g['repo'] + "/merge_requests"
         log.info('create_merge_request: ' + str(query))
-        result = requests.post(url, params=query)
+        result = requests.post(url, params=query, header=header)
         if result.status_code != requests.codes.created:
             raise ValueError(result.text)
         merge = result.json()
@@ -555,11 +557,11 @@ class GitHub2GitLab(object):
 
     def put_merge_request(self, merge_request, updates):
         g = self.gitlab
-        updates['private_token'] = g['token']
+        header = {'PRIVATE_TOKEN': g['token']}
         url = (g['url'] + "/projects/" + g['repo'] + "/merge_requests/" +
                str(merge_request['iid']))
         log.info('update_merge_request: ' + url + ' <= ' + str(updates))
-        return requests.put(url, params=updates).json()
+        return requests.put(url, params=updates, header=header).json()
 
     def verify_merge_update(self, updates, result):
         g = self.gitlab
