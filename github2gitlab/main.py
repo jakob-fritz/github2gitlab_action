@@ -381,6 +381,7 @@ class GitHub2GitLab(object):
             return (merge_field, pull_value)
 
     def sync(self):
+        print("Starting sync of pull-requests to merge-requests")
         pull_f2merge_f = {
             'state': 'state',
             'body': 'description',
@@ -402,7 +403,7 @@ class GitHub2GitLab(object):
                     if pull['body']:
                         data['description'] = pull['body'][:DESCRIPTION_MAX]
                     merge = self.create_merge_request(data)
-
+            print(f"Merge is: {merge}")
             if merge:
                 updates = {}
                 for (pull_field, merge_field) in six.iteritems(pull_f2merge_f):
@@ -419,6 +420,7 @@ class GitHub2GitLab(object):
                                                          merge_field,
                                                          merge[merge_field])
                         updates[key] = value
+                print(f"updates for merge are: {updates}")
                 if updates:
                     self.update_merge_request(merge, updates)
                 else:
