@@ -490,11 +490,13 @@ class GitHub2GitLab(object):
 
     def get_pull_requests(self):
         "https://developer.github.com/v3/pulls/#list-pull-requests"
+        print("Getting Pull-Requests")
         g = self.github
         query = {'state': 'all',
                  'per_page': 100}
         header = {}
         if self.args.github_token:
+            print("Using Authorization-Token")
             header['Authorization'] = f"token {g['token']}"
 
         def f(pull):
@@ -506,6 +508,7 @@ class GitHub2GitLab(object):
         pulls = []
         reply = self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
                          query, self.args.cache, header=header)
+        print(f"Got Pull-Requests. Reply is: {reply}")
         for listentry in reply:
             pulls += filter(f, listentry)
         return dict([(str(pull['number']), pull) for pull in pulls])
