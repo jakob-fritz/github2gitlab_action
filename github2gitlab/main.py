@@ -455,7 +455,7 @@ class GitHub2GitLab(object):
             log.error("unable to json.loads(" + payload + ")")
             raise e
 
-    def get(self, url, query, cache, header={}):
+    def get(self, url, query, cache, headers={}):
         payloads_file = (self.tmpdir + "/" +
                          hashlib.sha1(url.encode('utf-8')).hexdigest() +
                          ".json")
@@ -508,7 +508,7 @@ class GitHub2GitLab(object):
                 return True
         pulls = []
         replies = self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
-                           query, self.args.cache, header=header)
+                           query, self.args.cache, headers=header)
         # print(f"Got Pull-Requests. Reply is of type {type(replies)} and its content is: {replies}")
         for listentry in replies:
             pulls += filter(f, listentry)
@@ -521,7 +521,7 @@ class GitHub2GitLab(object):
         merges = self.get(g['url'] + "/projects/" +
                           g['repo_id'] + "/merge_requests",
                           {'state': 'all'}, cache=False,
-                          header={'PRIVATE-TOKEN': g['token']})
+                          headers={'PRIVATE-TOKEN': g['token']})
         print(f'Previous MR are: {merges}')
         return dict([(str(merge['id']), merge)
                      for merge in merges[0]])
@@ -531,7 +531,7 @@ class GitHub2GitLab(object):
         header = {'PRIVATE-TOKEN': g['token']}
         url = g['url'] + "/projects/" + g['repo_id'] + "/merge_requests"
         log.info('create_merge_request: ' + str(query))
-        result = requests.post(url, params=query, header=header)
+        result = requests.post(url, params=query, headers=header)
         if result.status_code != requests.codes.created:
             raise ValueError(result.text)
         merge = result.json()
@@ -567,7 +567,7 @@ class GitHub2GitLab(object):
         url = (g['url'] + "/projects/" + g['repo_id'] + "/merge_requests/" +
                str(merge_request['iid']))
         log.info('update_merge_request: ' + url + ' <= ' + str(updates))
-        return requests.put(url, params=updates, header=header).json()
+        return requests.put(url, params=updates, headers=header).json()
 
     def verify_merge_update(self, updates, result):
         g = self.gitlab
