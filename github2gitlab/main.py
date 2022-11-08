@@ -500,6 +500,7 @@ class GitHub2GitLab(object):
             header['Authorization'] = f"token {g['token']}"
 
         def f(pull):
+            print(f"Entry of Pull-Requests is of type {type(pull)} and its content is: {pull}")
             if self.args.ignore_closed:
                 return (pull['state'] == 'opened' or
                         (pull['state'] == 'closed' and pull['merged_at']))
@@ -508,10 +509,10 @@ class GitHub2GitLab(object):
         pulls = []
         replies = self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
                            query, self.args.cache, header=header)
-        print(f"Got Pull-Requests. Reply is: {replies}")
-        for reply in replies:
-            for listentry in reply:
-                pulls += filter(f, listentry)
+        print(f"Got Pull-Requests. Reply is of type {type(replies)} and its content is: {replies}")
+        # for reply in replies:
+        for listentry in replies[0]:
+            pulls += filter(f, listentry)
         print(f"{len(pulls)} pull-requests found.")
         return dict([(str(pull['number']), pull) for pull in pulls])
 
