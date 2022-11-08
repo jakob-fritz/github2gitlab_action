@@ -502,7 +502,7 @@ class GitHub2GitLab(object):
         def f(pull):
             print(f"Entry of Pull-Requests is of type {type(pull)} and its content is: {pull}")
             if self.args.ignore_closed:
-                return (pull['state'] == 'opened' or
+                return (pull['state'] == 'open' or
                         (pull['state'] == 'closed' and pull['merged_at']))
             else:
                 return True
