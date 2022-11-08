@@ -511,7 +511,7 @@ class GitHub2GitLab(object):
                            query, self.args.cache, header=header)
         print(f"Got Pull-Requests. Reply is of type {type(replies)} and its content is: {replies}")
         # for reply in replies:
-        for listentry in replies[0]:
+        for listentry in replies:
             pulls += filter(f, listentry)
         print(f"{len(pulls)} pull-requests found.")
         return dict([(str(pull['number']), pull) for pull in pulls])
