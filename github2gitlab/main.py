@@ -395,14 +395,14 @@ class GitHub2GitLab(object):
             else:
                 source_branch = 'pull/' + number + '/head'
                 target_branch = pull['base']['ref']
-                if (self.rev_parse(pull, source_branch) and
-                        self.rev_parse(pull, target_branch)):
-                    data = {'title': pull['title'],
-                            'source_branch': source_branch,
-                            'target_branch': target_branch}
-                    if pull['body']:
-                        data['description'] = pull['body'][:DESCRIPTION_MAX]
-                    merge = self.create_merge_request(data)
+                # if (self.rev_parse(pull, source_branch) and
+                #         self.rev_parse(pull, target_branch)):
+                data = {'title': pull['title'],
+                        'source_branch': source_branch,
+                        'target_branch': target_branch}
+                if pull['body']:
+                    data['description'] = pull['body'][:DESCRIPTION_MAX]
+                merge = self.create_merge_request(data)
             print(f"Merge is: {merge}")
             if merge:
                 updates = {}
@@ -500,7 +500,7 @@ class GitHub2GitLab(object):
             header['Authorization'] = f"token {g['token']}"
 
         def f(pull):
-            print(f"Entry of Pull-Requests is of type {type(pull)} and its content is: {pull}")
+            # print(f"Entry of Pull-Requests is of type {type(pull)} and its content is: {pull}")
             if self.args.ignore_closed:
                 return (pull['state'] == 'open' or
                         (pull['state'] == 'closed' and pull['merged_at']))
@@ -509,8 +509,7 @@ class GitHub2GitLab(object):
         pulls = []
         replies = self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
                            query, self.args.cache, header=header)
-        print(f"Got Pull-Requests. Reply is of type {type(replies)} and its content is: {replies}")
-        # for reply in replies:
+        # print(f"Got Pull-Requests. Reply is of type {type(replies)} and its content is: {replies}")
         for listentry in replies:
             pulls += filter(f, listentry)
         print(f"{len(pulls)} pull-requests found.")
