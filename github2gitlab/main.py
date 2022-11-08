@@ -465,7 +465,7 @@ class GitHub2GitLab(object):
             next_query = query
             while next_query:
                 log.debug(str(next_query))
-                result = requests.get(url, params=next_query, headers=header)
+                result = requests.get(url, params=next_query, headers=headers)
                 res_json = result.json()
                 payloads.append(result.json())
                 next_query = None
