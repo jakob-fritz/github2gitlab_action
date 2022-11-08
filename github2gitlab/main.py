@@ -509,7 +509,7 @@ class GitHub2GitLab(object):
         reply = self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
                          query, self.args.cache, header=header)
         print(f"Got Pull-Requests. Reply is: {reply}")
-        for listentry in reply:
+        for listentry in reply[0]:
             pulls += filter(f, listentry)
         return dict([(str(pull['number']), pull) for pull in pulls])
 
