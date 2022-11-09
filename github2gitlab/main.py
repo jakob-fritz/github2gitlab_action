@@ -393,7 +393,7 @@ class GitHub2GitLab(object):
             if number in self.pull2merge:
                 merge = self.pull2merge[number]
             else:
-                source_branch = 'pull/' + number + '/head'
+                source_branch = pull['head']['ref']
                 target_branch = pull['base']['ref']
                 # if (self.rev_parse(pull, source_branch) and
                 #         self.rev_parse(pull, target_branch)):
