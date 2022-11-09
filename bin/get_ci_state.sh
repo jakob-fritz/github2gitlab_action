@@ -34,7 +34,7 @@ echo "Poll timeout set to ${POLL_TIMEOUT}"
 
 ci_status="pending"
 
-until [ "$ci_status" != "pending" && "$ci_status" != "running" ]
+until [ "$ci_status" != "pending" ] && [ "$ci_status" != "running" ]
 do
    sleep $POLL_TIMEOUT
    ci_output=$(curl --header "PRIVATE-TOKEN: $GITLAB_PASSWORD" --silent "https://${GITLAB_HOSTNAME}/api/v4/projects/${GITLAB_PROJECT_ID}/pipelines/${pipeline_id}")
