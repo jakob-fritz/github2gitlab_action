@@ -381,7 +381,7 @@ class GitHub2GitLab(object):
             return (merge_field, pull_value)
 
     def sync(self):
-        print("Starting sync of pull-requests to merge-requests")
+        log.info("Starting sync of pull-requests to merge-requests")
         pull_f2merge_f = {
             'state': 'state',
             'body': 'description',
@@ -403,7 +403,7 @@ class GitHub2GitLab(object):
                 if pull['body']:
                     data['description'] = pull['body'][:DESCRIPTION_MAX]
                 merge = self.create_merge_request(data)
-            print(f"Merge is: {merge}")
+            log.debug(f"Merge is: {merge}")
             if merge:
                 updates = {}
                 for (pull_field, merge_field) in six.iteritems(pull_f2merge_f):
@@ -420,7 +420,7 @@ class GitHub2GitLab(object):
                                                          merge_field,
                                                          merge[merge_field])
                         updates[key] = value
-                print(f"updates for merge are: {updates}")
+                log.debug(f"updates for merge are: {updates}")
                 if updates:
                     self.update_merge_request(merge, updates)
                 else:
@@ -466,7 +466,7 @@ class GitHub2GitLab(object):
             while next_query:
                 log.debug(str(next_query))
                 result = requests.get(url, params=next_query, headers=headers)
-                res_json = result.json()
+                # res_json = result.json()
                 payloads.append(result.json())
                 next_query = None
                 for link in result.headers.get('Link', '').split(','):
@@ -490,17 +490,18 @@ class GitHub2GitLab(object):
 
     def get_pull_requests(self):
         "https://developer.github.com/v3/pulls/#list-pull-requests"
-        print("Getting Pull-Requests")
+        log.debug("Getting Pull-Requests")
         g = self.github
         query = {'state': 'all',
                  'per_page': 100}
         header = {}
         if self.args.github_token:
-            print("Using Authorization-Token")
+            log.debug("Using Authorization-Token")
             header['Authorization'] = f"token {g['token']}"
 
         def f(pull):
-            # print(f"Entry of Pull-Requests is of type {type(pull)} and its content is: {pull}")
+            # log.debug(f"Entry of Pull-Requests is of type {type(pull)}" +
+            #           f"and its content is: {pull}")
             if self.args.ignore_closed:
                 return (pull['state'] == 'open' or
                         (pull['state'] == 'closed' and pull['merged_at']))
@@ -509,10 +510,11 @@ class GitHub2GitLab(object):
         pulls = []
         replies = self.get(g['url'] + "/repos/" + g['repo'] + "/pulls",
                            query, self.args.cache, headers=header)
-        # print(f"Got Pull-Requests. Reply is of type {type(replies)} and its content is: {replies}")
+        log.debug(f"Got Pull-Requests. Reply is of type {type(replies)}" +
+                  f"and its content is: {replies}")
         for listentry in replies:
             pulls += filter(f, listentry)
-        print(f"{len(pulls)} pull-requests found.")
+        log.info(f"{len(pulls)} pull-requests found.")
         return dict([(str(pull['number']), pull) for pull in pulls])
 
     def get_merge_requests(self):
@@ -522,7 +524,6 @@ class GitHub2GitLab(object):
                           g['repo_id'] + "/merge_requests",
                           {'state': 'all'}, cache=False,
                           headers={'PRIVATE-TOKEN': g['token']})
-        print(f'Previous MR are: {merges}')
         return dict([(str(merge['id']), merge)
                      for merge in merges[0]])
 
@@ -539,14 +540,16 @@ class GitHub2GitLab(object):
         for (key, value) in six.iteritems(query):
             if key == 'private_token':
                 continue
-            if value.strip().replace('\n', '').replace('\r', '') != merge.get(key).strip().replace('\n', '').replace('\r', ''):
+            if value.strip().replace('\n', '').replace('\r', '') != \
+               merge.get(key).strip().replace('\n', '').replace('\r', ''):
                 raise ValueError(url + " " + key + " expected " +
                                  value + " but is " + merge.get(key, 'None'))
         return merge
 
     def update_merge_request(self, merge_request, updates):
         state_event = updates.pop('state_event', None)
-        if len(updates) == 0 or (len(updates) == 1 and 'private_token' in updates):
+        if len(updates) == 0 or \
+           (len(updates) == 1 and 'private_token' in updates):
             result = merge_request
         else:
             result = self.put_merge_request(merge_request, updates)
