@@ -137,11 +137,11 @@ class GitHub2GitLab(object):
         return GitHub2GitLab(GitHub2GitLab.get_parser().parse_args(argv))
 
     def run(self):
-        # self.authenticate()
+        self.authenticate()
         # self.add_key()
         # if self.add_project():
         # self.unprotect_branches()
-        # self.git_mirror()
+        self.git_mirror()
         if not self.args.skip_pull_requests:
             self.pull_requests = self.get_pull_requests()
             self.merge_requests = self.get_merge_requests()
