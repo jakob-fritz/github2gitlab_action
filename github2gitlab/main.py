@@ -520,8 +520,7 @@ class GitHub2GitLab(object):
     def get_merge_requests(self):
         "http://doc.gitlab.com/ce/api/merge_requests.html"
         g = self.gitlab
-        merges = self.get(g['url'] + "/projects/" +
-                          g['repo_id'] + "/merge_requests",
+        merges = self.get(g['url'] + "/projects/" + g['repo_id'] + "/merge_requests",
                           {'state': 'all'}, cache=False,
                           headers={'PRIVATE-TOKEN': g['token']})
         return dict([(str(merge['id']), merge)
