@@ -34,8 +34,10 @@ sh -c "git config --global --unset-all core.askPass"
 # sh -c "git config --global credential.helper cache"
 echo "length of username: "
 echo -n ${GITLAB_USERNAME} | wc -c
-echo "adding gitlab-repo as remote with user ${GITLAB_USERNAME}"
-git remote add gitlab https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${GITLAB_REPO_URL}
+echo "length of token: "
+echo -n ${GITLAB_TOKEN} | wc -c
+echo "adding gitlab-repo as remote"
+git remote add gitlab "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${GITLAB_REPO_URL}"
 # sh -c "git remote add gitlab $GITLAB_REPO_URL"
 sh -c "git fetch --force origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*"
 sh -c "git fetch origin +refs/pull/*:refs/heads/pull/*"
