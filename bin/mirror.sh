@@ -29,9 +29,11 @@ branch="+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/* +refs/pull/*:refs/he
 sh -c "pwd"
 # Removing all cached credentials
 sh -c "git credential-cache exit"
-sh -c "git config --global --unset-all credential.username $GITLAB_USERNAME"
+sh -c "git config --global --unset-all credential.username"
 sh -c "git config --global --unset-all core.askPass"
 # sh -c "git config --global credential.helper cache"
+sh -c "echo adding gitlab-repo as remote with user ${GITLAB_USERNAME}"
+sh -c "echo ${GITLAB_TOKEN}"
 sh -c "git remote add gitlab https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${GITLAB_REPO_URL}"
 # sh -c "git remote add gitlab $GITLAB_REPO_URL"
 sh -c "git fetch --force origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*"
