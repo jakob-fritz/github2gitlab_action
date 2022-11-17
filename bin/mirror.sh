@@ -27,8 +27,10 @@ branch="+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/* +refs/pull/*:refs/he
 # branch_uri="$(urlencode ${branch})"
 
 sh -c "pwd"
-# sh -c "git config --global credential.username $GITLAB_USERNAME"
-# sh -c "git config --global core.askPass ./github2gitlab_action/bin/getpasswd.sh"
+# Removing all cached credentials
+sh -c "git credential-cache exit"
+sh -c "git config --global --unset-all credential.username $GITLAB_USERNAME"
+sh -c "git config --global --unset-all core.askPass"
 # sh -c "git config --global credential.helper cache"
 sh -c "git remote add gitlab https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${GITLAB_REPO_URL}"
 # sh -c "git remote add gitlab $GITLAB_REPO_URL"
