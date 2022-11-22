@@ -335,13 +335,12 @@ class GitHub2GitLab(object):
     def update_merge_pull(self):
         self.merge2pull = {}
         self.pull2merge = {}
-        for (id, merge) in six.iteritems(self.merge_requests):
-            pull = merge['source_branch'].split('/')
-            if len(pull) == 3:
-                number = pull[1]
-                if number in self.pull_requests:
-                    self.merge2pull[id] = self.pull_requests[number]
-                    self.pull2merge[number] = self.merge_requests[id]
+        for (from_to, merge) in six.iteritems(self.merge_requests):
+            if from_to in self.pull_requests.keys():
+                # merge_id = merge['id']
+                # pull_id = self.pull_requests[from_to]['id']
+                self.merge2pull[from_to] = self.pull_requests[from_to]
+                self.pull2merge[from_to] = self.merge_requests[from_to]
 
     @staticmethod
     def field_equal(pull, pull_field, pull_value,
@@ -388,11 +387,11 @@ class GitHub2GitLab(object):
             'body': 'description',
             'title': 'title',
         }
-        for number in sorted(self.pull_requests.keys()):
-            pull = self.pull_requests[number]
+        for from_to in sorted(self.pull_requests.keys()):
+            pull = self.pull_requests[from_to]
             merge = None
-            if number in self.pull2merge:
-                merge = self.pull2merge[number]
+            if from_to in self.pull2merge:
+                merge = self.pull2merge[from_to]
             else:
                 source_branch = pull['head']['ref']
                 target_branch = pull['base']['ref']
@@ -425,6 +424,7 @@ class GitHub2GitLab(object):
                 if updates:
                     self.update_merge_request(merge, updates)
                 else:
+                    number = pull['id']
                     log.debug("https://github.com/" +
                               self.github['repo'] + "/" +
                               "pull/" + number + " == " +
@@ -515,8 +515,12 @@ class GitHub2GitLab(object):
                   f"and its content is: {replies}")
         for listentry in replies:
             pulls += filter(f, listentry)
-        log.info(f"{len(pulls)} pull-requests found.")
-        return dict([(str(pull['number']), pull) for pull in pulls])
+        # Get number of found pull-requests for debugging
+        pull_numbers = [pull['number'] for pull in pulls]
+        log.info(f"{len(pulls)} pull-requests found. "
+                 f"With numbers {sorted(pull_numbers)}")
+        return dict([((pull['head']['ref'], pull['base']['ref']), pull)
+                     for pull in pulls])
 
     def get_merge_requests(self):
         "http://doc.gitlab.com/ce/api/merge_requests.html"
@@ -525,7 +529,7 @@ class GitHub2GitLab(object):
                           g['repo_id'] + "/merge_requests",
                           {'state': 'all'}, cache=False,
                           headers={'PRIVATE-TOKEN': g['token']})
-        return dict([(str(merge['id']), merge)
+        return dict([((merge['source_branch'], merge['target_branch']), merge)
                      for merge in merges[0]])
 
     def create_merge_request(self, query):
