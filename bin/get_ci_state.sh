@@ -2,29 +2,10 @@
 
 set -u
 ##################################################################
-urlencode() (
-    i=1
-    max_i=${#1}
-    while test $i -le $max_i; do
-        c="$(expr substr $1 $i 1)"
-        case $c in
-            [a-zA-Z0-9.~_-])
-		printf "$c" ;;
-            *)
-		printf '%%%02X' "'$c" ;;
-        esac
-        i=$(( i + 1 ))
-    done
-)
-
-##################################################################
 DEFAULT_POLL_TIMEOUT=10
 POLL_TIMEOUT=${POLL_TIMEOUT:-$DEFAULT_POLL_TIMEOUT}
 
-# branch="$(git symbolic-ref --short HEAD)"
-# branch_uri="$(urlencode ${branch})"
-
-sleep $POLL_TIMEOUT
+# sleep $POLL_TIMEOUT
 
 pipeline_id=$(curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" --silent "https://${GITLAB_HOSTNAME}/api/v4/projects/${GITLAB_PROJECT_ID}/repository/commits/${GITHUB_SHA}" | jq '.last_pipeline.id')
 
