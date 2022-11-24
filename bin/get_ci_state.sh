@@ -11,7 +11,7 @@ pipeline_id=$(curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" --silent "https://${G
 
 echo "Triggered CI for branch ${GITHUB_REF}"
 echo "Working with pipeline id #${pipeline_id}"
-echo "Poll timeout set to ${POLL_TIMEOUT}"
+echo "Poll timeout set to ${POLL_TIMEOUT} s"
 
 ci_status="pending"
 
