@@ -70,7 +70,8 @@ class GitHub2GitLab(object):
         if self.args.branches:
             self.github['branches'] = self.args.branches.split(',')
         self.gitlab = {
-            'git': self.args.gitlab_url.replace('http://', 'git@').replace('https://', 'git@'),
+            'git': self.args.gitlab_url.replace('http://', 'git@')
+                                       .replace('https://', 'git@'),
             'host': self.args.gitlab_url,
             'name': self.args.gitlab_name,
             'namespace': self.args.gitlab_namespace,

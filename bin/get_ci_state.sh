@@ -41,6 +41,7 @@ for JOB_ID in $(echo $ci_jobs | jq -r .id); do
   echo "##[endgroup]"
 done
 echo "Debug problems by unfolding stages/jobs above"
+echo "For more details on the Jobs see: ${ci_web_url}"
 
 if [ "$ci_status" = "success" ]
 then
